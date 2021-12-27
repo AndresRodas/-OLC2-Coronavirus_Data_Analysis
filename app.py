@@ -5,7 +5,7 @@ from flask import Flask, request, render_template
 from flask.json import jsonify
 from flask_cors import CORS, cross_origin
 
-app = Flask(__name__, static_folder='', static_url_path='')
+app = Flask(__name__, static_folder='templates', static_url_path='')
 CORS(app)
 
 @app.route('/', methods=['GET'])
