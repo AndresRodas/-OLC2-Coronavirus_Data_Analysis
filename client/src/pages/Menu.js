@@ -27,7 +27,7 @@ export class Menu extends Component {
             return (
                 <div>
                     <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                    <Home value="Estamos en el Analisis" />
+                    <Data value="Estamos en el Analisis" />
                 </div>
             )
         }
@@ -35,7 +35,7 @@ export class Menu extends Component {
             return (
                 <div>
                     <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                    <Data value="Estamos en el Edit" />
+                    <Home value="Estamos en el Edit" />
                 </div>
             )
         }
