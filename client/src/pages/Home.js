@@ -6,9 +6,9 @@ import { InputText } from "primereact/inputtext";
 class Home extends React.Component {
     render() {
         return (
-            <div className="p-grid">
+            <div className="p-m-6">
                 <h1>Coronavirus Data Analysis</h1>
-                <Fieldset legend="Resumen" className="p-justify-start">
+                <Fieldset legend="Resumen" className="p-shadow-5" >
                     <p>Durante la emergencia sanitaria provocada por el COVID-19, se ha observado 
                         un notable incremento en la aplicación de nuevas tecnologías al campo de 
                         la salud y la investigación. Desde la creación de todo tipo de dispositivos 

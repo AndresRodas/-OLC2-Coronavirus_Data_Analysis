@@ -2,10 +2,7 @@ import React, { Fragment } from "react";
 
 //prime
 import { FileUpload } from 'primereact/fileupload';
-import { Panel } from 'primereact/panel';
 import { Card } from 'primereact/card';
- 
-import { Button } from 'primereact/button';
 
 //services
 import { DataService } from '../services/DataService'
@@ -27,9 +24,9 @@ class Data extends React.Component {
 
     render() {
         return (
-            <div> 
-                <Card title="Selecciona la Fuente de Datos" subTitle="(.csv, .xls, .xlsx y .json)"  className="p-grid">
-                    <FileUpload name="demo" accept=".csv" customUpload uploadHandler={this.myUploader}/>
+            <div className="p-grid p-justify-center"> 
+                <Card title="Selecciona la Fuente de Datos" subTitle="(.csv, .xls, .xlsx y .json)"  className="p-my-6 p-shadow-5">
+                    <FileUpload name="demo" accept=".csv" customUpload uploadHandler={this.myUploader} className="p-mx-6"/>
                 </Card> 
             </div>
         )

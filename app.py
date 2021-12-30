@@ -31,21 +31,23 @@ def func_post():
     str_vals = request.files['myFile'].read().decode('utf-8')
     #leyendo valores con panda
     dataframe = pd.read_csv(StringIO(str_vals))
-    
-    target = 'notas'
+    #variables
+    var_ind_x = 'horas'
+    var_dep_y = 'notas'
+    var_pred = 0
     #nos quedamos solo con horas X
-    independiente = dataframe.drop(columns=target).columns
+    #independiente = dataframe.drop(columns=target).columns
     modelo = LinearRegression()
     #agregamos variables al modelo
-    modelo.fit(X=dataframe[independiente], y=dataframe[target])
+    modelo.fit(X=dataframe[[var_ind_x]], y=dataframe[[var_dep_y]])
     #se genera la linea predictiva y se agrega al frame
-    dataframe["predicted"] = modelo.predict(dataframe[independiente])
-    prediccion_test = dataframe[["notas", "predicted"]]
+    dataframe["predicted"] = modelo.predict(dataframe[[var_ind_x]])
+    #prediccion_test = dataframe[["notas", "predicted"]]
     #?
-    X_t, X_test, y_t, y_test = train_test_split(dataframe[independiente], dataframe[target])
+    X_t, X_test, y_t, y_test = train_test_split(dataframe[[var_ind_x]], dataframe[[var_dep_y]])
     
     #prediccion de Y para valor preciso
-    predicted = modelo.predict([[10]])
+    predicted = modelo.predict([[var_pred]])
    
     print(predicted)
     print(modelo.coef_) #pendiente b
@@ -54,14 +56,14 @@ def func_post():
 
     y_pred = modelo.predict(X_test)
 
-    #plt.scatter(X_test, y_test, color='red')
-    #plt.scatter(X_test, y_pred, color='blue')
+    #plt.scatter(X_test, y_test, color='yellow')
+    plt.scatter(X_test, y_pred, color='blue')
     #plt.plot(X_t, modelo.predict(X_t), color='black')
-    plt.scatter(dataframe[independiente], dataframe[target], color='red')
-    plt.plot(dataframe[independiente], dataframe["predicted"], color='black')
+    plt.scatter(dataframe[[var_ind_x]], dataframe[[var_dep_y]], color='red')
+    plt.plot(dataframe[[var_ind_x]], dataframe["predicted"], color='black')
     plt.title('Notas vs Horas de estudio')
-    plt.xlabel('Horas')
-    plt.ylabel('Notas')
+    plt.xlabel(var_ind_x)
+    plt.ylabel(var_dep_y)
 
     plt.show()
 
