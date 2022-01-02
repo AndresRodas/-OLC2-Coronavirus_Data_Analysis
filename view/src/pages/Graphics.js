@@ -4,7 +4,9 @@ import React from "react";
 import { Chart } from 'primereact/chart';
 import { Button } from 'primereact/button';
 import { TabView, TabPanel } from 'primereact/tabview';
-import { PDFViewer } from "@react-pdf/renderer"
+//PDF
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import DocuPDF from '../DocuPDF'
 
 class Graphics extends React.Component {
 
@@ -56,8 +58,10 @@ class Graphics extends React.Component {
                             <Chart type='line' data={this.state.data} options={this.options} />
                     </TabPanel>
                     <TabPanel header="Reporte">
-                        
                         <Button label="Descargar" icon="pi pi-check" />
+                        <PDFViewer style={{ width: "100%", height: "90vh" }}>
+                            <DocuPDF Texto={"Este es el texto que debe desplegarse en el documento PDF que sera un reporte"} />
+                        </PDFViewer>
                     </TabPanel>
                 </TabView>
             </div>

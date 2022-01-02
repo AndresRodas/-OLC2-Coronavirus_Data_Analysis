@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 from sklearn import model_selection
 from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 app = Flask(__name__, static_folder='templates', static_url_path='')
@@ -56,16 +56,16 @@ def func_post():
 
     y_pred = modelo.predict(X_test)
 
-    #plt.scatter(X_test, y_test, color='yellow')
-    plt.scatter(X_test, y_pred, color='blue')
-    #plt.plot(X_t, modelo.predict(X_t), color='black')
-    plt.scatter(dataframe[[var_ind_x]], dataframe[[var_dep_y]], color='red')
-    plt.plot(dataframe[[var_ind_x]], dataframe["predicted"], color='black')
-    plt.title('Notas vs Horas de estudio')
-    plt.xlabel(var_ind_x)
-    plt.ylabel(var_dep_y)
+    # #plt.scatter(X_test, y_test, color='yellow')
+    # plt.scatter(X_test, y_pred, color='blue')
+    # #plt.plot(X_t, modelo.predict(X_t), color='black')
+    # plt.scatter(dataframe[[var_ind_x]], dataframe[[var_dep_y]], color='red')
+    # plt.plot(dataframe[[var_ind_x]], dataframe["predicted"], color='black')
+    # plt.title('Notas vs Horas de estudio')
+    # plt.xlabel(var_ind_x)
+    # plt.ylabel(var_dep_y)
 
-    plt.show()
+    # plt.show()
 
 
     return "true"

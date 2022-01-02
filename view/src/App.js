@@ -6,7 +6,7 @@ import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
-//components
+//pages
 import { Menu } from './pages/Menu'
 
 function App() {

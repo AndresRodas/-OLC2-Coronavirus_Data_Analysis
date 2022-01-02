@@ -3,7 +3,7 @@ import React, {Component} from "react";
 //prime react
 import { TabMenu } from 'primereact/tabmenu';
 
-//components
+//pages
 import Home from "./Home";
 import Data from "./Data";
 import Variables from "./Variables";
@@ -28,7 +28,7 @@ export class Menu extends Component {
             return (
                 <div>
                     <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                    <Data value="Estamos en el Analisis" />
+                    <Data />
                 </div>
             )
         }
@@ -36,7 +36,7 @@ export class Menu extends Component {
             return (
                 <div>
                     <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                    <Variables value="Estamos en el Edit" />
+                    <Variables />
                 </div>
             )
         }
@@ -44,14 +44,14 @@ export class Menu extends Component {
             return (
                 <div>
                     <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                    <Graphics value="Estamos en el Edit" />
+                    <Graphics />
                 </div>
             )
         }
         return (
             <div>
                 <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                <Home value="Estamos en el Home" />
+                <Home />
             </div>
         )
     }

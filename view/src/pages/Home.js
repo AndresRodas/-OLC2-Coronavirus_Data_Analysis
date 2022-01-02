@@ -7,7 +7,7 @@ class Home extends React.Component {
     render() {
         return (
             <div className="p-m-6">
-                <h1 className="p-text-bold">Coronavirus Data Analysis</h1>
+                <h1 className="p-text-bold" style={{fontFamily: "cursive"}} >Coronavirus Data Analysis</h1>
                 <Fieldset legend="Resumen" className="p-shadow-5" >
                     <p>Durante la emergencia sanitaria provocada por el COVID-19, se ha observado 
                         un notable incremento en la aplicación de nuevas tecnologías al campo de 
