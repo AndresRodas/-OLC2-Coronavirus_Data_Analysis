@@ -24,12 +24,12 @@ filename = '/examen.csv'
 
 """Setear parametros"""
 
-df = pd.read_csv(f'{path}{filename}', sep=';')
+df = pd.read_csv(f'pred.csv')
 
 """Transformar data a array"""
 
-var_x = 'Anio'
-var_y = 'Republica'
+var_x = 'NO'
+var_y = 'B'
 
 x = np.asarray(df[var_x]).reshape(-1, 1)
 y = df[var_y]
@@ -47,7 +47,7 @@ plt.plot(x, y_pred, color='blue')
 
 """Predicciones"""
 
-print(regr.predict([[2030]]))
+print(regr.predict([[20]]))
 
 """Impresión de valores"""
 
@@ -79,7 +79,7 @@ x_new = np.linspace(x_new_min, x_new_max, 50)
 x_new = x_new[:, np.newaxis]
 
 x_trans = pf.fit_transform(x_new)
-
+print("****************PREDICT*********************")
 print(regr.predict(x_trans))
 
 plt.scatter(x, y, color='green')

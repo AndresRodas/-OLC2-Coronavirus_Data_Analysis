@@ -8,17 +8,17 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.naive_bayes import GaussianNB
 
 
 #leyendo valores con panda
-dataframe = pd.read_csv('notas.csv', encoding='latin-1')
-targetX = 'horas'
-targetY = 'notas'
+dataframe = pd.read_csv('pred.csv', encoding='latin-1')
+targetX = 'NO'
+targetY = 'C'
 #nos quedamos solo con horas X
 #independiente = dataframe.drop(columns=target).columns
-modelo = LinearRegression()
-#agregamos variables al modelo
-modelo.fit(X=dataframe[[targetX]], y=dataframe[[targetY]])
+modelo = GaussianNB().fit(dataframe[[targetX]], dataframe[[targetY]])
+
 #se genera la linea predictiva y se agrega al frame
 dataframe["predicted"] = modelo.predict(dataframe[[targetX]])
 prediccion_test = dataframe[[targetX, targetY, "predicted"]]
@@ -27,7 +27,7 @@ print(prediccion_test)
 #X_t, X_test, y_t, y_test = train_test_split(dataframe[independiente], dataframe[target])
 
 #prediccion de Y para valor preciso
-predicted = modelo.predict([[30]])
+predicted = modelo.predict([[50]])
 
 #err
 errorcito = mean_squared_error(dataframe[[targetY]], dataframe[["predicted"]])
