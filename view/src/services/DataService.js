@@ -9,7 +9,6 @@ export class DataService {
             method: 'POST',
             body: formData
         })
-        //console.log(await res.json())
         return await res.json()
     }
 

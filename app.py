@@ -1,11 +1,8 @@
 from io import StringIO
-# from logging import debug
 from os import name
 from flask import Flask, request, render_template, jsonify
-# from flask.json import jsonify
 from flask_cors import CORS, cross_origin
 from scipy.sparse import data
-# import csv
 
 #SKLEARN
 from sklearn.preprocessing import PolynomialFeatures
@@ -137,14 +134,12 @@ def lineal(x, y, pred, dataframe):
     var_dep_y = y
     var_pred = pred
     #nos quedamos solo con horas X
-    #independiente = dataframe.drop(columns=target).columns
     modelo = LinearRegression()
     #agregamos variables al modelo
     modelo.fit(X=dataframe[[var_ind_x]], y=dataframe[[var_dep_y]])
     #se genera la linea predictiva y se agrega al frame
     dataframe["predicted"] = modelo.predict(dataframe[[var_ind_x]])
     #prediccion_test = dataframe[["notas", "predicted"]]
-    #?
     X_t, X_test, y_t, y_test = train_test_split(dataframe[[var_ind_x]], dataframe[[var_dep_y]])
     
     #prediccion de Y para valor preciso
@@ -192,4 +187,4 @@ def polinomial(var_x, var_y, pred, dataframe):
 
 
 if __name__ == '__main__':
-    app.run(debug=False, port=5000)
+    app.run(debug=True, port=5000)
