@@ -13,7 +13,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 #leyendo valores con panda
-dataframe = pd.read_csv('data.csv', encoding='latin-1')
+#dataframe = pd.read_csv('data.csv', encoding='latin-1')
+dataframe = pd.read_excel('full_data.xlsx')
+dataframe = dataframe.fillna(0)
+print(dataframe)
 pais = 'Afghanistan'
 targetX = 'date'
 targetY = 'total_cases'

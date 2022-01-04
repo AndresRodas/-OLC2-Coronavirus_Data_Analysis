@@ -61,7 +61,17 @@ class Variables extends React.Component {
     }
 
     Rep1 = async () =>{
-        const response = await this.dataService.Report_1(this.props.data, this.state.x, this.state.y, this.state.z, this.state.pred, this.state.pais )
+        if(this.props.data === null){
+            alert("ERROR: No se ha cargado una fuente de datos o es incorrecta...")
+            return
+        }
+        var name = this.props.data.name.split('.')
+        var ext = name[name.length-1]
+        const response = await this.dataService.Report_1(this.props.data, this.state.x, this.state.y, this.state.z, this.state.pred, this.state.pais, ext)
+        if( response === null) {
+            alert("ERROR: Las variables ingresadas son incorrectas...")
+            return
+        }
         const names = {
             download_title: 'Reporte1',
             title: 'Tendencia de la infección por Covid-19 en '+this.state.pais,
@@ -71,7 +81,7 @@ class Variables extends React.Component {
             text: {
                 title: 'Tendencia de la infección por Covid-19 en '+this.state.pais,
                 resumen: 'Cada país reporta los datos de forma ligeramente distinta y de forma inevitable no incluye las muertes y contagios que no han sido diagnosticados. En este reporte nos enfocamos en las tendencias dentro del pais ('+this.state.pais+') indicado en el área de parametrizacion, a medida que estos tratan de contener la propagación del virus, independientemente de si se están acercando o ya pasaron el pico de contagios, o si están experimentando un resurgir de contagios o muertes.  Para este calculo se toma como eje x los casos totales de covid del pais y como eje y los casos nuevos',
-                text1: 'Tipo de Regresión:\n\nPara este tipo de reporte se implementó una regresión polinomial, debido al tipo de datos que podrian venir incluidos en el archivo de datos.  En este caso los valores no crecen o decrecen de la misma manera, por ende una regresión linean no hubiera sido de gran ayuda para este cálculo.\n\nTendencia:\n\nLa tendencia del gráfico anterior se define principalmente por su pendiente, que es la tasa de cambio de las infecciones de '+this.state.pais+' para este caso el valor es de '+response.pendiente+', de esta manera, si la pendiente es negativa tenemos que tener en cuenta un decremento de las infecciones, por el contrario si la pendiente es positiva estamos ante un posible pico de infectados.',
+                text1: 'Tipo de Regresión:\n\nPara este tipo de reporte se implementó una regresión polinomial, debido al tipo de datos que podrian venir incluidos en el archivo de datos.  En este caso los valores no crecen o decrecen de la misma manera, por ende una regresión linean no hubiera sido de gran ayuda para este cálculo.\n\nTendencia:\n\nLa tendencia del gráfico anterior se define principalmente por su pendiente, que es la tasa de cambio de las infecciones de '+this.state.pais+' para este caso el valor es de '+response.pendiente+(response.pendiente > 0 ? ', de esta manera notamos que la pendiente es positiva, por lo que es posible que estemos frente a un nuevo pico de personas infectados' : ', de esta manera notamos que la pendiente es negativa, por lo que puede significar una reduccion en las personas infectadas de dicho país.'),
                 text2: 'Dato de Predicción:\n\nLa sección de parametrización de variables incluye una casilla en donde se ingresa un valor a predecir por la tendencia de las infecciones por Covid-19 en dicho país.  Esta variable toma el lugar del eje x o variable independiente y mediante la regresión predice cierto valor en y o variable dependiente.  Para este caso, la prediccion para '+this.state.pred+' es de: '+response.predict_val+'.  Si no se ingresó ningun valor para predecir, el valor por defecto es 0.\n\nMedida de Error:\n\nComo parte fundamental de los modelos con los que se definió la información es que incluso en la ciencia de datos, los datos mismos en muy raras ocasiones son exactos.  Para este modelo de regresion polinomial se registraron los siguientes coeficientes de error:\n\nRMSE: '+response.rmse+'\nR^2: '+response.r2
             }
         }
@@ -81,7 +91,17 @@ class Variables extends React.Component {
     }
 
     Rep2 = async () => {
-        const response = await this.dataService.Report_2(this.props.data, this.state.x, this.state.y, this.state.z, this.state.pred, this.state.pais )
+        if(this.props.data === null){
+            alert("ERROR: No se ha cargado una fuente de datos o es incorrecta...")
+            return
+        }
+        var name = this.props.data.name.split('.')
+        var ext = name[name.length-1]
+        const response = await this.dataService.Report_2(this.props.data, this.state.x, this.state.y, this.state.z, this.state.pred, this.state.pais, ext)
+        if( response === null) {
+            alert("ERROR: Las variables ingresadas son incorrectas...")
+            return
+        }
         const names = {
             download_title: 'Reporte2',
             title: 'Predicción de Infectados en '+this.state.pais,
@@ -90,9 +110,9 @@ class Variables extends React.Component {
             predict_quest: this.state.pred,
             text: {
                 title: 'Predicción de Infectados en '+this.state.pais,
-                resumen: 'Cada país reporta los datos de forma ligeramente distinta y de forma inevitable no incluye las muertes y contagios que no han sido diagnosticados. En este reporte nos enfocamos en las tendencias dentro del pais ('+this.state.pais+') indicado en el área de parametrizacion, a medida que estos tratan de contener la propagación del virus, independientemente de si se están acercando o ya pasaron el pico de contagios, o si están experimentando un resurgir de contagios o muertes.',
-                text1: 'Tipo de Regresión:\n\nPara este tipo de reporte se implementó una regresión polinomial, debido al tipo de datos que podrian venir incluidos en el archivo de datos.  En este caso los valores no crecen o decrecen de la misma manera, por ende una regresión linean no hubiera sido de gran ayuda para este cálculo.\n\nTendencia:\n\nLa tendencia del gráfico anterior se define principalmente por su pendiente, que es la tasa de cambio de las infecciones de '+this.state.pais+' para este caso el valor es de '+response.pendiente+', de esta manera, si la pendiente es negativa tenemos que tener en cuenta un decremento de las infecciones, por el contrario si la pendiente es positiva estamos ante un posible pico de infectados.',
-                text2: 'Dato de Predicción:\n\nLa sección de parametrización de variables incluye una casilla en donde se ingresa un valor a predecir por la tendencia de las infecciones por Covid-19 en dicho país.  Esta variable toma el lugar del eje x o variable independiente y mediante la regresión predice cierto valor en y o variable dependiente.  Para este caso, la prediccion para '+this.state.pred+' es de: '+response.predict_val+'.  Si no se ingresó ningun valor para predecir, el valor por defecto es 0.\n\nMedida de Error:\n\nComo parte fundamental de los modelos con los que se definió la información es que incluso en la ciencia de datos, los datos mismos en muy raras ocasiones son exactos.  Para este modelo de regresion polinomial se registraron los siguientes coeficientes de error:\n\nError: '+response.error+'\n\nRMSE: '+response.rmse+'\nR^2: '+response.r2
+                resumen: 'Para la prediccion de infectados de determinado pais se tomó en cuenta una variable que represente el Dia y otra que represente los casos totales de Covid-19 que han habido hasta la fecha en dicho pais.  Generalmente se reportan los datos de forma ligeramente distinta y de forma inevitable no incluye las muertes y contagios que no han sido diagnosticados.  Es bien sabido que la propagación de la enfermedad está influenciada por la gente, la voluntad de adoptar conductas preventivas de salud pública que a menudo se asocian con la percepción pública del riesgo.',
+                text1: 'Tipo de Regresión:\n\nPara este tipo de reporte se implementó una regresión lineal, debido al tipo de datos que podrian venir incluidos en el archivo de datos.  Los valores que se esperan encontrar en el archivo de entrada crecen o decrecen de la misma manera en una forma lineal, por ende una regresión linean se acopla de buena manera al modelo y al calculo de las variables.\n\nTendencia:\n\nLa tendencia del gráfico anterior se define principalmente por su pendiente, que es la tasa de cambio de las personas infectadas en '+this.state.pais+', para este caso el valor es de '+response.pendiente+(response.pendiente > 0 ? ', de esta manera notamos que la pendiente es positiva, por lo que es posible que estemos frente a un nuevo pico de personas infectados' : ', de esta manera notamos que la pendiente es negativa, por lo que puede significar una reduccion en las personas infectadas de dicho país.'),
+                text2: 'Dato de Predicción:\n\nLa sección de parametrización de variables incluye una casilla en donde se ingresa un valor a predecir por la tendencia de las infecciones por Covid-19 en dicho país.  Esta variable toma el lugar del eje x o variable independiente y mediante la regresión predice cierto valor en y o variable dependiente.  Para este caso, la prediccion para '+this.state.pred+' es de: '+response.predict_val+'.  Si no se ingresó ningun valor para predecir, el valor por defecto es 0.\n\nMedida de Error:\n\nComo parte fundamental del modelo de regresión lineal con el que se definió la información es que incluso en la ciencia de datos, los datos mismos en muy raras ocasiones son exactos.  Para este modelo de regresion lineal se registraron los siguientes coeficientes de error:\n\nError: '+response.error+'\n\nRMSE: '+response.rmse+'\nR^2: '+response.r2
             }
         }
         const report = Object.assign(response, names)

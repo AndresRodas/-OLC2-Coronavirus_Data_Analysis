@@ -14,18 +14,18 @@ class Graphics extends React.Component {
         super(props)
         this.state = {
             data : {
-                labels: this.props.report.x,
+                labels: (this.props.report != null ? this.props.report.x : []),
                 datasets: [
                   {
                     label: 'Tendencia',
-                    data: this.props.report.predict_list,
+                    data: (this.props.report != null ? this.props.report.predict_list : []),
                     fill: false,
                     borderColor: 'black',
                           backgroundColor: 'blue'
                   },
                   { 
-                    label: this.props.report.y_name,
-                    data: this.props.report.y,
+                    label: (this.props.report != null ? this.props.report.y_name : ''),
+                    data: (this.props.report != null ? this.props.report.y : []),
                     fill: false,
                     borderColor: 'white',
                           backgroundColor: 'red',
@@ -55,22 +55,24 @@ class Graphics extends React.Component {
             <div className="p-grid p-justify-center" >
                 <TabView className="p-col-8 p-my-6 p-shadow-5">
                     <TabPanel header="Gráfica">
-                        <h1 className="p-grid p-justify-center p-mt-5 p-mb-6">{this.props.report.title}</h1>
-                        <h3>{this.props.report.y_name}</h3>  
+                        <h1 className="p-grid p-justify-center p-mt-5 p-mb-6">{(this.props.report != null ? this.props.report.title : '')}</h1>
+                        <h3>{(this.props.report != null ? this.props.report.y_name : '')}</h3>
                         <Chart type='line' data={this.state.data} options={this.options}/>
-                        <h3 className="p-grid p-justify-end p-mt-3">{this.props.report.x_name}</h3>
+                        <h3 className="p-grid p-justify-end p-mt-3">{(this.props.report != null ? this.props.report.x_name : '')}</h3>
                     </TabPanel>
                     <TabPanel header="Reporte">
                         <PDFViewer style={{ width: "100%", height: "90vh" }}>
-                            <DocuPDF content={this.props.report.text} />
+                            {(this.props.report != null ? <DocuPDF content={this.props.report.text} /> : null )}
                         </PDFViewer>
-                        <PDFDownloadLink
-                            document={<DocuPDF content={this.props.report.text} />}
-                            fileName={this.props.report.download_title}
-                        >
-                            <Button label="Descargar Reporte" icon="pi pi-check" />
-                        </PDFDownloadLink>
-                        
+                        {(this.props.report != null ? 
+                            <PDFDownloadLink
+                                document={<DocuPDF content={this.props.report.text} />}
+                                fileName={this.props.report.download_title}
+                            >
+                                <Button label="Descargar Reporte" icon="pi pi-check" />
+                            </PDFDownloadLink>
+                            : null
+                        )}
                     </TabPanel>
                 </TabView>
             </div>

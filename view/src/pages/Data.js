@@ -17,7 +17,8 @@ class Data extends React.Component {
     }
 
     myUploader = (file) => {
-        console.log('se manda del componente DATA')
+        var name = file.files[0].name.split('.')
+        var ext = name[name.length-1]
         this.props.callback(file.files[0])
     }
 

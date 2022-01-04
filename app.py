@@ -22,18 +22,27 @@ CORS(app)
 def func_home():
     return render_template('index.html')
 
-@app.route('/report1/<var_x>/<var_y>/<var_z>/<pred>/<pais>', methods=['POST'])
+@app.route('/report1/<var_x>/<var_y>/<var_z>/<pred>/<pais>/<ext>', methods=['POST'])
 @cross_origin()
-def rep1(var_x, var_y, var_z, pred, pais):
+def rep1(var_x, var_y, var_z, pred, pais, ext):
     pred_tmp = dt.strptime(pred, '%Y-%m-%d').date().toordinal()
-    #obteniendo FileStorage y convirtiendo a string
-    str_vals = request.files['myFile'].read().decode('utf-8')
+    
+
     #leyendo valores con panda
-    dataframe = pd.read_csv(StringIO(str_vals))
+    dataframe = None
+    if(ext == 'csv'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile'].read().decode('utf-8')
+        dataframe = pd.read_csv(StringIO(str_vals))
+    elif(ext == 'xls' or ext == 'xlsx'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile']
+        dataframe = pd.read_excel(str_vals)
+
+    dataframe = dataframe.fillna(0)
     dataframe = dataframe.loc[dataframe[var_z] == pais]
 
     dataframe['date_ordinal'] = pd.to_datetime(dataframe[var_x]).apply(lambda date: date.toordinal())
-
     x = np.asarray(dataframe['date_ordinal']).reshape(-1, 1)
     y = dataframe[var_y]
 
@@ -68,29 +77,30 @@ def rep1(var_x, var_y, var_z, pred, pais):
         }
     return jsonify(ret_val) 
 
-@app.route('/report2/<targetX>/<targetY>/<targetZ>/<pred>/<pais>', methods=['POST'])
+@app.route('/report2/<targetX>/<targetY>/<targetZ>/<pred>/<pais>/<ext>', methods=['POST'])
 @cross_origin()
-def rep2(targetX, targetY, targetZ, pred, pais):
+def rep2(targetX, targetY, targetZ, pred, pais, ext):
     x_tmp = targetX
     pred_tmp = dt.strptime(pred, '%Y-%m-%d').date().toordinal()
 
-    #obteniendo FileStorage y convirtiendo a string
-    str_vals = request.files['myFile'].read().decode('utf-8')
-    #leyendo valores con panda
-    dataframe = pd.read_csv(StringIO(str_vals))
+    
 
-    # pais = 'Afghanistan'
-    # targetX = 'date'
-    # targetY = 'total_cases'
-    # targetZ = 'location'
+    #leyendo valores con panda
+    dataframe = None
+    if(ext == 'csv'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile'].read().decode('utf-8')
+        dataframe = pd.read_csv(StringIO(str_vals))
+    elif(ext == 'xls' or ext == 'xlsx'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile']
+        dataframe = pd.read_excel(str_vals)
+
+    dataframe = dataframe.fillna(0)
     dataframe = dataframe.loc[dataframe[targetZ] == pais]
     dataframe['date_ordinal'] = pd.to_datetime(dataframe[targetX]).apply(lambda date: date.toordinal())
-
     targetX = 'date_ordinal'
     #targetY = dataframe[['total_cases']]
-    print(targetX)
-    print(targetY)
-    print(dataframe)
     #nos quedamos solo con horas X
     #independiente = dataframe.drop(columns=target).columns
     modelo = LinearRegression()
@@ -99,7 +109,6 @@ def rep2(targetX, targetY, targetZ, pred, pais):
     #se genera la linea predictiva y se agrega al frame
     dataframe["predicted"] = modelo.predict(dataframe[[targetX]])
     prediccion_test = dataframe[[targetX, targetY, "predicted"]]
-    print(prediccion_test)
     #prediccion de Y para valor preciso
     predicted = modelo.predict([[pred_tmp]])
     #err
@@ -107,13 +116,6 @@ def rep2(targetX, targetY, targetZ, pred, pais):
     ##asdsad
     rmse = np.sqrt(errorcito)
     r2 = r2_score(dataframe[[targetY]], dataframe[["predicted"]])
-    print(predicted)
-    print('*****PENDIENTE*****')
-    print(modelo.coef_) #pendiente b
-    print('*****CORTE*****')
-    print(modelo.intercept_) #punto de corte a
-    print('*****ERROR*****')
-    print(errorcito)
     ret_val = { 
         'x': dataframe[[x_tmp]].values.tolist(), 
         'y': dataframe[targetY].values.tolist(), 
