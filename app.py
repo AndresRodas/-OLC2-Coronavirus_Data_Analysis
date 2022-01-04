@@ -26,8 +26,6 @@ def func_home():
 @cross_origin()
 def rep1(var_x, var_y, var_z, pred, pais, ext):
     pred_tmp = dt.strptime(pred, '%Y-%m-%d').date().toordinal()
-    
-
     #leyendo valores con panda
     dataframe = None
     if(ext == 'csv'):
@@ -38,6 +36,9 @@ def rep1(var_x, var_y, var_z, pred, pais, ext):
         #obteniendo FileStorage y convirtiendo a string
         str_vals = request.files['myFile']
         dataframe = pd.read_excel(str_vals)
+    elif(ext == 'json'):
+        str_vals = request.files['myFile']
+        dataframe = pd.read_json(str_vals)
 
     dataframe = dataframe.fillna(0)
     dataframe = dataframe.loc[dataframe[var_z] == pais]
@@ -82,9 +83,6 @@ def rep1(var_x, var_y, var_z, pred, pais, ext):
 def rep2(targetX, targetY, targetZ, pred, pais, ext):
     x_tmp = targetX
     pred_tmp = dt.strptime(pred, '%Y-%m-%d').date().toordinal()
-
-    
-
     #leyendo valores con panda
     dataframe = None
     if(ext == 'csv'):
@@ -95,6 +93,9 @@ def rep2(targetX, targetY, targetZ, pred, pais, ext):
         #obteniendo FileStorage y convirtiendo a string
         str_vals = request.files['myFile']
         dataframe = pd.read_excel(str_vals)
+    elif(ext == 'json'):
+        str_vals = request.files['myFile']
+        dataframe = pd.read_json(str_vals)
 
     dataframe = dataframe.fillna(0)
     dataframe = dataframe.loc[dataframe[targetZ] == pais]
@@ -127,6 +128,216 @@ def rep2(targetX, targetY, targetZ, pred, pais, ext):
         'r2': r2
         }
     return jsonify(ret_val) 
+
+@app.route('/report3/<targetX>/<targetY>/<ext>', methods=['POST'])
+@cross_origin()
+def rep3(targetX, targetY, ext):
+    x_tmp = targetX
+    #leyendo valores con panda
+    dataframe = None
+    if(ext == 'csv'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile'].read().decode('utf-8')
+        dataframe = pd.read_csv(StringIO(str_vals))
+    elif(ext == 'xls' or ext == 'xlsx'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile']
+        dataframe = pd.read_excel(str_vals)
+    elif(ext == 'json'):
+        str_vals = request.files['myFile']
+        dataframe = pd.read_json(str_vals)
+
+    dataframe = dataframe.fillna(0)
+    # dataframe = dataframe.loc[dataframe[targetZ] == pais]
+    dataframe['date_ordinal'] = pd.to_datetime(dataframe[targetX]).apply(lambda date: date.toordinal())
+    targetX = 'date_ordinal'
+    #independiente = dataframe.drop(columns=target).columns
+    modelo = LinearRegression()
+    #agregamos variables al modelo
+    modelo.fit(X=dataframe[[targetX]], y=dataframe[[targetY]])
+    #se genera la linea predictiva y se agrega al frame
+    dataframe["predicted"] = modelo.predict(dataframe[[targetX]])
+    prediccion_test = dataframe[[targetX, targetY, "predicted"]]
+    #prediccion de Y para valor preciso
+    # predicted = modelo.predict([[pred_tmp]])
+    #err
+    errorcito = mean_squared_error(dataframe[[targetY]], dataframe[["predicted"]])
+    ##asdsad
+    rmse = np.sqrt(errorcito)
+    r2 = r2_score(dataframe[[targetY]], dataframe[["predicted"]])
+    ret_val = { 
+        'x': dataframe[[x_tmp]].values.tolist(), 
+        'y': dataframe[targetY].values.tolist(), 
+        'predict_list': dataframe['predicted'].values.tolist(),
+        'pendiente': modelo.coef_[len(modelo.coef_)-1][0],
+        'corte': modelo.intercept_[0],
+        'error': errorcito,
+        'rmse': rmse,
+        'r2': r2
+        }
+    print(ret_val)
+    return jsonify(ret_val) 
+
+@app.route('/report4/<var_x>/<var_y>/<var_z>/<pred>/<depto>/<ext>', methods=['POST'])
+@cross_origin()
+def rep4(var_x, var_y, var_z, pred, depto, ext):
+    pred_tmp = dt.strptime(pred, '%Y-%m-%d').date().toordinal()
+    #leyendo valores con panda
+    dataframe = None
+    if(ext == 'csv'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile'].read().decode('utf-8')
+        dataframe = pd.read_csv(StringIO(str_vals))
+    elif(ext == 'xls' or ext == 'xlsx'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile']
+        dataframe = pd.read_excel(str_vals)
+    elif(ext == 'json'):
+        str_vals = request.files['myFile']
+        dataframe = pd.read_json(str_vals)
+
+    dataframe = dataframe.fillna(0)
+    dataframe = dataframe.loc[dataframe[var_z] == depto]
+
+    dataframe['date_ordinal'] = pd.to_datetime(dataframe[var_x]).apply(lambda date: date.toordinal())
+    x = np.asarray(dataframe['date_ordinal']).reshape(-1, 1)
+    y = dataframe[var_y]
+
+    """Configurar regresión polinomial"""
+    pf = PolynomialFeatures(degree = 2)
+    x_trans = pf.fit_transform(x)
+
+    regr = LinearRegression()
+    regr.fit(x_trans, y)
+
+    y_pred = regr.predict(x_trans)
+    dataframe["predict"] = y_pred
+    rmse = np.sqrt(mean_squared_error(y, y_pred))
+    r2 = r2_score(y, y_pred)
+
+    """Predicción"""
+    x_new_min = pred_tmp
+    x_new_max = pred_tmp
+    x_new = np.linspace(x_new_min, x_new_max, 10)
+    x_new = x_new[:, np.newaxis]
+
+    x_trans = pf.fit_transform(x_new)
+
+    ret_val = { 
+        'x': dataframe[var_x].values.tolist(), 
+        'y': dataframe[var_y].values.tolist(), 
+        'predict_list': dataframe['predict'].values.tolist(),
+        'predict_val': regr.predict(x_trans)[0],
+        'pendiente': regr.coef_[len(regr.coef_)-1],
+        'rmse': rmse,
+        'r2': r2
+        }
+    return jsonify(ret_val) 
+
+@app.route('/report8/<var_x>/<var_y>/<var_z>/<pred>/<pais>/<ext>', methods=['POST'])
+@cross_origin()
+def rep8(var_x, var_y, var_z, pred, pais, ext):
+    pred_tmp = dt.strptime(pred, '%Y').date().toordinal()
+    #leyendo valores con panda
+    dataframe = None
+    if(ext == 'csv'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile'].read().decode('utf-8')
+        dataframe = pd.read_csv(StringIO(str_vals))
+    elif(ext == 'xls' or ext == 'xlsx'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile']
+        dataframe = pd.read_excel(str_vals)
+    elif(ext == 'json'):
+        str_vals = request.files['myFile']
+        dataframe = pd.read_json(str_vals)
+
+    dataframe = dataframe.fillna(0)
+    dataframe = dataframe.loc[dataframe[var_z] == pais]
+
+    dataframe['date_ordinal'] = pd.to_datetime(dataframe[var_x]).apply(lambda date: date.toordinal())
+    x = np.asarray(dataframe['date_ordinal']).reshape(-1, 1)
+    y = dataframe[var_y]
+
+    """Configurar regresión polinomial"""
+    pf = PolynomialFeatures(degree = 2)
+    x_trans = pf.fit_transform(x)
+
+    regr = LinearRegression()
+    regr.fit(x_trans, y)
+
+    y_pred = regr.predict(x_trans)
+    dataframe["predict"] = y_pred
+    rmse = np.sqrt(mean_squared_error(y, y_pred))
+    r2 = r2_score(y, y_pred)
+
+    """Predicción"""
+    x_new_min = pred_tmp
+    x_new_max = pred_tmp
+    x_new = np.linspace(x_new_min, x_new_max, 10)
+    x_new = x_new[:, np.newaxis]
+
+    x_trans = pf.fit_transform(x_new)
+
+    ret_val = { 
+        'x': dataframe[var_x].values.tolist(), 
+        'y': dataframe[var_y].values.tolist(), 
+        'predict_list': dataframe['predict'].values.tolist(),
+        'predict_val': regr.predict(x_trans)[0],
+        'pendiente': regr.coef_[len(regr.coef_)-1],
+        'rmse': rmse,
+        'r2': r2
+        }
+    return jsonify(ret_val) 
+
+@app.route('/report9/<var_x>/<var_y>/<var_z>/<pais>/<ext>', methods=['POST'])
+@cross_origin()
+def rep9(var_x, var_y, var_z, pais, ext):
+    x_tmp = var_x
+    #leyendo valores con panda
+    dataframe = None
+    if(ext == 'csv'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile'].read().decode('utf-8')
+        dataframe = pd.read_csv(StringIO(str_vals))
+    elif(ext == 'xls' or ext == 'xlsx'):
+        #obteniendo FileStorage y convirtiendo a string
+        str_vals = request.files['myFile']
+        dataframe = pd.read_excel(str_vals)
+    elif(ext == 'json'):
+        str_vals = request.files['myFile']
+        dataframe = pd.read_json(str_vals)
+
+    dataframe = dataframe.fillna(0)
+    dataframe = dataframe.loc[dataframe[var_z] == pais]
+
+    dataframe['date_ordinal'] = pd.to_datetime(dataframe[var_x]).apply(lambda date: date.toordinal())
+    x = np.asarray(dataframe['date_ordinal']).reshape(-1, 1)
+    y = dataframe[var_y]
+
+    """Configurar regresión polinomial"""
+    pf = PolynomialFeatures(degree = 2)
+    x_trans = pf.fit_transform(x)
+
+    regr = LinearRegression()
+    regr.fit(x_trans, y)
+
+    y_pred = regr.predict(x_trans)
+    dataframe["predict"] = y_pred
+    rmse = np.sqrt(mean_squared_error(y, y_pred))
+    r2 = r2_score(y, y_pred)
+    print(dataframe[[x_tmp]].values.tolist())
+    ret_val = { 
+        'x': dataframe[[x_tmp]].values.tolist(), 
+        'y': dataframe[var_y].values.tolist(), 
+        'predict_list': dataframe['predict'].values.tolist(),
+        'pendiente': regr.coef_[len(regr.coef_)-1],
+        'rmse': rmse,
+        'r2': r2
+        }
+    print(ret_val)
+    return jsonify(ret_val) 
+
 
 
 
@@ -189,4 +400,4 @@ def polinomial(var_x, var_y, pred, dataframe):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)

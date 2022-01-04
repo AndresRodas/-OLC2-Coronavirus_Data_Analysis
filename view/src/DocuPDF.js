@@ -60,6 +60,7 @@ const DocuPDF = ({ content }) => {
             <Text style={{ color: "black", fontSize: "15px", position: "absolute", top: "0px", marginLeft:"20px", width: "250px", marginTop: "15px" }}>
               {content.text1}
             </Text>
+            
             <Text style={{ color: "#000000", fontSize: "15px", marginLeft:"300px", marginRight: "20px", marginTop:"15px" }}>
               {content.text2}
             </Text>

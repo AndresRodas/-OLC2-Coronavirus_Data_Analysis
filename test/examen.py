@@ -14,11 +14,12 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 #leyendo valores con panda
 #dataframe = pd.read_csv('data.csv', encoding='latin-1')
-dataframe = pd.read_excel('full_data.xlsx')
+#dataframe = pd.read_excel('full_data.xlsx')
+dataframe = pd.read_json('data_json.json')
 dataframe = dataframe.fillna(0)
 print(dataframe)
 pais = 'Afghanistan'
-targetX = 'date'
+targetX = 'location'
 targetY = 'total_cases'
 targetZ = 'location'
 dataframe = dataframe.loc[dataframe[targetZ] == pais]

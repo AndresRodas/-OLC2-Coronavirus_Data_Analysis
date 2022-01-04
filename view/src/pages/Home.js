@@ -96,7 +96,7 @@ class Home extends React.Component {
                     <p>● Análisis del número de muertes por coronavirus en un País.</p>
                     <p>● Tendencia del número de infectados por día de un País.</p>
                     <p>● Predicción de casos de un país para un año.</p>
-                    <p>● Tendencia de la vacunación de en un País.</p>
+                    <p>● Tendencia de la vacunación de un País.</p>
                     <p>● Ánalisis Comparativo de Vacunaciópn entre 2 paises.</p>
                     <p>● Porcentaje de hombres infectados por covid-19 en un País desde el primer caso activo</p>
                     <p>● Ánalisis Comparativo entres 2 o más paises o continentes.</p>

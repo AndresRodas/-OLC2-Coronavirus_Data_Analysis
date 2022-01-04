@@ -17,8 +17,8 @@ class Data extends React.Component {
     }
 
     myUploader = (file) => {
-        var name = file.files[0].name.split('.')
-        var ext = name[name.length-1]
+        // var name = file.files[0].name.split('.')
+        // var ext = name[name.length-1]
         this.props.callback(file.files[0])
     }
 
@@ -26,7 +26,7 @@ class Data extends React.Component {
         return (
             <div className="p-grid p-justify-center"> 
                 <Card title="Selecciona la Fuente de Datos" subTitle="(.csv, .xls, .xlsx y .json)"  className="p-my-6 p-shadow-5">
-                    <FileUpload name="demo" accept=".csv" customUpload uploadHandler={this.myUploader} className="p-mx-6"/>
+                    <FileUpload name="demo"  customUpload uploadHandler={this.myUploader} className="p-mx-6"/>
                 </Card> 
             </div>
         )
