@@ -13,7 +13,9 @@ export class Menu extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeIndex: 0
+            activeIndex: 0,
+            data: null,
+            report: null
         }
         this.items = [
             { label: 'Home', icon: 'pi pi-fw pi-home' },
@@ -23,12 +25,22 @@ export class Menu extends Component {
         ];
     }
 
+    getResponseData(res_data) {
+        this.setState({data: res_data})
+        this.setState({ activeIndex: 2 })
+    }
+
+    GraphReport(res_report){
+        this.setState({report: res_report})
+        this.setState({ activeIndex: 3 })
+    }
+
     render() {
         if (this.state.activeIndex === 1) {
             return (
                 <div>
                     <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                    <Data />
+                    <Data callback={this.getResponseData.bind(this)} />
                 </div>
             )
         }
@@ -36,7 +48,7 @@ export class Menu extends Component {
             return (
                 <div>
                     <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                    <Variables />
+                    <Variables data={this.state.data} callback={this.GraphReport.bind(this)}/>
                 </div>
             )
         }
@@ -44,7 +56,7 @@ export class Menu extends Component {
             return (
                 <div>
                     <TabMenu model={this.items} activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} />
-                    <Graphics />
+                    <Graphics  report={this.state.report}/>
                 </div>
             )
         }

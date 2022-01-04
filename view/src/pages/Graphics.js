@@ -14,18 +14,18 @@ class Graphics extends React.Component {
         super(props)
         this.state = {
             data : {
-                labels: ['5','7','8','10','11','15','18'],
+                labels: this.props.report.x,
                 datasets: [
                   {
-                    label: 'First Dataset',
-                    data: [39.26, 46.19, 49.65, 56.59, 60.05, 73.92, 84.31],
+                    label: 'Tendencia',
+                    data: this.props.report.predict_list,
                     fill: false,
                     borderColor: 'black',
                           backgroundColor: 'blue'
                   },
                   { 
-                    label: 'Second Dataset',
-                    data: [35, 45, 50, 60, 65, 75, 80],
+                    label: this.props.report.y_name,
+                    data: this.props.report.y,
                     fill: false,
                     borderColor: 'white',
                           backgroundColor: 'red',
@@ -55,13 +55,22 @@ class Graphics extends React.Component {
             <div className="p-grid p-justify-center" >
                 <TabView className="p-col-8 p-my-6 p-shadow-5">
                     <TabPanel header="Gráfica">
-                            <Chart type='line' data={this.state.data} options={this.options} />
+                        <h1 className="p-grid p-justify-center p-mt-5 p-mb-6">{this.props.report.title}</h1>
+                        <h3>{this.props.report.y_name}</h3>  
+                        <Chart type='line' data={this.state.data} options={this.options}/>
+                        <h3 className="p-grid p-justify-end p-mt-3">{this.props.report.x_name}</h3>
                     </TabPanel>
                     <TabPanel header="Reporte">
-                        <Button label="Descargar" icon="pi pi-check" />
                         <PDFViewer style={{ width: "100%", height: "90vh" }}>
-                            <DocuPDF Texto={"Este es el texto que debe desplegarse en el documento PDF que sera un reporte"} />
+                            <DocuPDF content={this.props.report.text} />
                         </PDFViewer>
+                        <PDFDownloadLink
+                            document={<DocuPDF content={this.props.report.text} />}
+                            fileName={this.props.report.download_title}
+                        >
+                            <Button label="Descargar Reporte" icon="pi pi-check" />
+                        </PDFDownloadLink>
+                        
                     </TabPanel>
                 </TabView>
             </div>

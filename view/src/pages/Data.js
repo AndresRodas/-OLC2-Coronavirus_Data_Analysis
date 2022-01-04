@@ -17,9 +17,8 @@ class Data extends React.Component {
     }
 
     myUploader = (file) => {
-        console.log(file.files)
-
-        this.dataService.handleSubmit(file.files[0])
+        console.log('se manda del componente DATA')
+        this.props.callback(file.files[0])
     }
 
     render() {

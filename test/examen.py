@@ -1,19 +1,31 @@
 #SKLEARN
 from re import X
-from matplotlib import colors, lines
+# from matplotlib import colors, lines
 import pandas as pd
+from datetime import date
 import numpy as np
+from scipy.sparse import data
 from sklearn import model_selection
 from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 
 
 #leyendo valores con panda
-dataframe = pd.read_csv('notas.csv', encoding='latin-1')
-targetX = 'horas'
-targetY = 'notas'
+dataframe = pd.read_csv('data.csv', encoding='latin-1')
+pais = 'Afghanistan'
+targetX = 'date'
+targetY = 'total_cases'
+targetZ = 'location'
+dataframe = dataframe.loc[dataframe[targetZ] == pais]
+dataframe['date_ordinal'] = pd.to_datetime(dataframe[targetX]).apply(lambda date: date.toordinal())
+
+targetX = 'date_ordinal'
+#targetY = dataframe[['total_cases']]
+print(targetX)
+print(targetY)
+print(dataframe)
 #nos quedamos solo con horas X
 #independiente = dataframe.drop(columns=target).columns
 modelo = LinearRegression()

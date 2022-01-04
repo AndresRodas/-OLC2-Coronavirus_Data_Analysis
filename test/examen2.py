@@ -10,51 +10,31 @@ Original file is located at
 ## Tercer parcial - Ciencia de datos
 """
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error, r2_score
 
-"""Variables para el archivo"""
-
-path = '/content/drive/MyDrive/Colab/DataScience/Examen'
-filename = '/examen.csv'
 
 """Setear parametros"""
 
-df = pd.read_csv(f'pred.csv')
+df = pd.read_csv('Reporte1.csv')
 
 """Transformar data a array"""
 
-var_x = 'NO'
-var_y = 'B'
+var_x = 'DIAS'
+var_y = 'INFECTADOS'
+pais = 'GUATEMALA'
 
+df = df.loc[df['PAIS'] ==  pais]
+print(df)
 x = np.asarray(df[var_x]).reshape(-1, 1)
 y = df[var_y]
 
-"""Configurar regresión lineal"""
 
-regr = LinearRegression()
-regr.fit(x, y)
-y_pred = regr.predict(x)
-
-"""Graficos"""
-
-plt.scatter(x, y, color='green')
-plt.plot(x, y_pred, color='blue')
-
-"""Predicciones"""
-
-print(regr.predict([[20]]))
-
-"""Impresión de valores"""
-
-print(x)
-print(y_pred)
-print(regr.coef_)
-print(regr.intercept_)
+# df.loc[df['A'] == 'foo']
 
 """Configurar regresión polinomial"""
 
@@ -72,33 +52,30 @@ print('RMSE: ', rmse)
 print('R^2: ', r2)
 
 """Predicción"""
-
-x_new_min = 2025
-x_new_max = 2025
+pred = 26
+x_new_min = pred
+x_new_max = pred
 x_new = np.linspace(x_new_min, x_new_max, 50)
 x_new = x_new[:, np.newaxis]
 
 x_trans = pf.fit_transform(x_new)
 print("****************PREDICT*********************")
-print(regr.predict(x_trans))
+print(regr.predict(x_trans)[0])
 
-plt.scatter(x, y, color='green')
-plt.plot(x, y_pred, color='blue')
-plt.show()
 
-"""GausianoNB
+# """GausianoNB
 
-"""
+# """
 
-from sklearn.naive_bayes import GaussianNB
-X = np.array([[6,3,1,3,7,4,3,6],[7,4,0,4,8,5,4,7],[8,5,1,5,6,3,5,7],[7,4,2,4,8,5,4,7],[8,5,1,5,7,4,5,8],[7,4,0,3,4,2,0,0],[8,5,0,3,5,1,0,0],[7,4,2,5,4,0,0,0]])
-Y = np.array([1, 1, 1, 2, 2, 2])
-clf = GaussianNB()
-# Adaptación de datos
-clf.fit(X, Y)
-print("==Predict result by predict==")
-# print(clf.predict([[-0.8, -1]]))
-print("==Predict result by predict_proba==")
-# print(clf.predict_proba([[-0.8, -1]]))
-print("==Predict result by predict_log_proba==")
-# print(clf.predict_log_proba([[-0.8, -1]]))
+# from sklearn.naive_bayes import GaussianNB
+# X = np.array([[6,3,1,3,7,4,3,6],[7,4,0,4,8,5,4,7],[8,5,1,5,6,3,5,7],[7,4,2,4,8,5,4,7],[8,5,1,5,7,4,5,8],[7,4,0,3,4,2,0,0],[8,5,0,3,5,1,0,0],[7,4,2,5,4,0,0,0]])
+# Y = np.array([1, 1, 1, 2, 2, 2])
+# clf = GaussianNB()
+# # Adaptación de datos
+# clf.fit(X, Y)
+# print("==Predict result by predict==")
+# # print(clf.predict([[-0.8, -1]]))
+# print("==Predict result by predict_proba==")
+# # print(clf.predict_proba([[-0.8, -1]]))
+# print("==Predict result by predict_log_proba==")
+# # print(clf.predict_log_proba([[-0.8, -1]]))
